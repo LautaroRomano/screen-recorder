@@ -33,7 +33,14 @@ ul {
 @media (max-width: 767px) {
   .landing-page header {
     min-height: auto;
-    display: initial;
+  }
+
+  .landing-page header .container ul {
+    display: none;
+  }
+
+  .landing-page .disable-mobile {
+    display: none;
   }
 }
 

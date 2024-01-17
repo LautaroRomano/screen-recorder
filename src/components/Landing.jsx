@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../App.css'
-import { Flex, Text, Heading, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Image, Link, Box } from '@chakra-ui/react';
+import { Flex, Text, Heading, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Image, Link, Box, useDisclosure, DrawerContent, DrawerHeader, DrawerBody, Drawer } from '@chakra-ui/react';
 import { BsRecordCircle } from "react-icons/bs";
 import RecordRTC from 'recordrtc';
 import { FaPause } from "react-icons/fa";
@@ -11,6 +11,9 @@ import { MdOutlineScreenshotMonitor } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import { MdSaveAlt } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa6";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoMdClose } from "react-icons/io";
+import { IoLogoInstagram } from "react-icons/io";
 
 export default function Landing(props) {
 
@@ -19,6 +22,15 @@ export default function Landing(props) {
     const [isRecording, setIsRecording] = useState(false);
     const [isPause, setIsPause] = useState(false);
     const [view, setView] = useState(false);
+
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const userAgent = navigator.userAgent;
+        const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+
+        setIsMobile(mobileRegex.test(userAgent));
+    }, []);
 
     const startRecording = async () => {
         const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
@@ -62,8 +74,9 @@ export default function Landing(props) {
     };
 
     return (
-        <Flex w={'100vw'} h={'100vh'} bg={'#4352E3'} id='home'>
+        <Flex w={'100vw'} h={'100vh'} bg={'#4352E3'} id='home' overflowX={'unset'}>
             <div className="landing-page">
+                <MyDrawer />
                 <header>
                     <div className="container">
                         <a href="#home" className="logo">SCREEN <b>REC</b></a>
@@ -71,25 +84,31 @@ export default function Landing(props) {
                             <li><Link href='#home'>Inicio</Link></li>
                             <li><Link href='#about-us'>Sobre nosotros</Link></li>
                             <li><Link href='#frequent-questions'>Preguntas frecuentes</Link></li>
-                            <li><button onClick={startRecording}>GRABAR</button></li>
+                            <li>{!isMobile ? <button onClick={startRecording}>{'GRABAR'}</button> : <p>{':('}</p>}</li>
                         </ul>
                     </div>
                 </header>
                 <Flex h={'calc(100% - 80px)'} >
                     <Flex h={'100%'} justify={'center'} align={'center'}>
-                        <Flex flexDir={'column'} w={'50%'} px={'100px'} gap={'50px'} color={'#fff'}>
+                        <Flex flexDir={'column'} w={['100%', '100%', '50%', '50%']} px={['10px', '10px', '100px', '100px']} gap={'50px'} color={'#fff'}>
                             <Heading>Graba tu pantalla gratis</Heading>
                             <Text fontSize={'15px'}>
                                 Con nuestra aplicacion puedes grabar la pantalla de tu computadora sin descargar nada, y GRATIS! <br />
                                 Para comenzar solo presiona el boton de GRABAR y nosotros haremos la magia✨.
                             </Text>
+                            {
+                                isMobile &&
+                                <Text fontSize={'15px'}>
+                                    Lo sentimos... <br /> esta aplicacion solo funciona en escritorio. 😔
+                                </Text>
+                            }
                             {!isRecording ?
                                 <Flex w={'100%'} gap={3}>
-                                    <Button bg={'#6C63FF'} color={'#fff'} _hover={{ bg: '#6C6399' }} onClick={startRecording} w={'100%'}>
+                                    <Button bg={'#6C63FF'} color={'#fff'} _hover={{ bg: '#6C6399' }} onClick={() => !isMobile && startRecording()} w={'100%'}>
                                         <Text me={2}>
                                             <BsRecordCircle />
                                         </Text>
-                                        GRABAR
+                                        {!isMobile ? 'GRABAR' : 'NO DISPONIBLE'}
                                     </Button>
                                     {
                                         view &&
@@ -129,7 +148,7 @@ export default function Landing(props) {
                                 </Flex>
                             }
                         </Flex>
-                        <Flex w={'45%'} px={5}>
+                        <Flex w={['0', '0', '45%', '45%']} px={5} display={['none', 'none', 'flex', 'flex']}>
                             {
                                 view ?
                                     <video ref={recordedVideoRef} controls />
@@ -142,7 +161,7 @@ export default function Landing(props) {
 
                 <Flex h={'100%'} w={'100%'} bg={'#453AFF'} id='about-us'>
                     <Flex h={'100%'} justify={'center'} align={'center'}>
-                        <Flex w={'35%'} px={5}>
+                        <Flex w={'35%'} px={5} display={['none', 'none', 'flex', 'flex']}>
                             <Flex w={'100%'} align={'center'} justify={'center'}>
                                 <Box mt={8} bg={'#131B6C'} fontWeight={'bold'} w={['95%', '80%', '65%', '80%']} p={8} borderRadius={10} color={'#fff'}>
                                     <Text>
@@ -151,7 +170,7 @@ export default function Landing(props) {
                                 </Box>
                             </Flex>
                         </Flex>
-                        <Flex flexDir={'column'} w={'60%'} px={'100px'} gap={'50px'} color={'#fff'}>
+                        <Flex flexDir={'column'} w={['100%', '100%', '60%', '60%']} px={['10px', '10px', '100px', '100px']} gap={'50px'} color={'#fff'}>
                             <Heading>Sobre el servicio</Heading>
                             <Flex justify={'space-evenly'} flexWrap={'wrap'} gap={'50px'}>
                                 <Flex maxW={'250px'} gap={3} fontWeight={'bold'}>
@@ -185,9 +204,9 @@ export default function Landing(props) {
 
 
                 </Flex>
-                <Flex h={'100%'} w={'100%'} bg={'#19228B'} id='frequent-questions'>
-                    <Flex h={'100%'} justify={'center'} align={'center'}>
-                        <Flex flexDir={'column'} w={'60%'} px={'100px'} gap={'50px'} color={'#fff'}>
+                <Flex h={['100%', '100%', '100%', '100%']} w={'100%'} bg={'#19228B'} id='frequent-questions'>
+                    <Flex h={'100%'} justify={'center'} align={'center'} flexWrap={'wrap'}>
+                        <Flex flexDir={'column'} w={['100%', '100%', '60%', '60%']} px={['10px', '10px', '100px', '100px']} gap={'50px'} color={'#fff'}>
                             <Heading>Preguntas frecuentes</Heading>
                             <Accordion defaultIndex={[0]} allowMultiple>
                                 <AccordionItem>
@@ -239,16 +258,60 @@ export default function Landing(props) {
                                         Para incluir su voz, habilite la marca del icono de Micrófono antes de empezar a grabar. Si necesita capturar los sonidos internos del sistema, habilite el icono de Sonido.
                                     </AccordionPanel>
                                 </AccordionItem>
+
+                                <AccordionItem>
+                                    <h2>
+                                        <AccordionButton>
+                                            <Box as="span" flex='1' textAlign='left'>
+                                                ¿Puedo grabar la pantalla de mi telefono?
+                                            </Box>
+                                            <AccordionIcon />
+                                        </AccordionButton>
+                                    </h2>
+                                    <AccordionPanel pb={4}>
+                                        Por el momento la opcion de grabar la pantalla de tu telefono no es posible.
+                                    </AccordionPanel>
+                                </AccordionItem>
                             </Accordion>
                         </Flex>
-                        <Flex w={'35%'} px={5}>
+                        <Flex w={['80%', '80%', '35%', '35%']} px={5}>
                             <Link href='https://www.instagram.com/dev.soul.it' target='_blank'>
-                                <Image src="/desarrollado por.jpg" />
+                                <Flex w={'100%'} h={'100%'} color={'#fff'} pos={'relative'} justify={'center'} align={'end'}>
+                                    <Image src="/desarrollado por.jpg" />
+                                    <Text pos={'absolute'} bottom={'70px'} fontSize={'19px'} fontWeight={'bold'}>Para mas desarrollo Seguinos</Text>
+                                    <Flex pos={'absolute'} bottom={'40px'} justify={'center'} align={'center'} fontSize={'18px'}>
+                                        <Text fontWeight={'semibold'} me={1}><IoLogoInstagram /></Text>
+                                        <Text>dev.soul.it</Text>
+                                    </Flex>
+                                </Flex>
                             </Link>
                         </Flex>
                     </Flex>
                 </Flex>
             </div>
         </Flex>
+    )
+}
+
+
+function MyDrawer() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    return (
+        <>
+            <Button bg={'#4352E3'} onClick={onOpen} position={'absolute'} right={3} top={3} color={'#fff'}>
+                <GiHamburgerMenu />
+            </Button>
+            <Drawer placement={'top'} onClose={onClose} isOpen={isOpen} bg='#4352E3'>
+                <DrawerContent bg='#000850' color={'#FFF'}>
+                    <DrawerHeader borderBottomWidth='1px'><Flex w={'100%'} justify={'space-between'}>Menu <Flex onClick={onClose}><IoMdClose /></Flex></Flex></DrawerHeader>
+                    <DrawerBody>
+                        <Text my={3}><Link href='#home'>Inicio</Link></Text>
+                        <Text my={3}><Link href='#about-us'>Sobre nosotros</Link></Text>
+                        <Text my={3}><Link href='#frequent-questions'>Preguntas frecuentes</Link></Text>
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
+        </>
     )
 }
