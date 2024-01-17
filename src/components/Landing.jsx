@@ -25,6 +25,17 @@ export default function Landing(props) {
 
     const [isMobile, setIsMobile] = useState(false);
 
+    const handleClickLink = (e, targetId) => {
+        e.preventDefault();
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            targetElement.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    };
+
     useEffect(() => {
         const userAgent = navigator.userAgent;
         const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
@@ -81,9 +92,9 @@ export default function Landing(props) {
                     <div className="container">
                         <a href="#home" className="logo">SCREEN <b>REC</b></a>
                         <ul className="links">
-                            <li><Link href='#home'>Inicio</Link></li>
-                            <li><Link href='#about-us'>Sobre nosotros</Link></li>
-                            <li><Link href='#frequent-questions'>Preguntas frecuentes</Link></li>
+                            <li><Link onClick={(e) => handleClickLink(e, 'home')} href='#home'>Inicio</Link></li>
+                            <li><Link onClick={(e) => handleClickLink(e, 'about-us')} href='#about-us'>Sobre nosotros</Link></li>
+                            <li><Link onClick={(e) => handleClickLink(e, 'frequent-questions')} href='#frequent-questions'>Preguntas frecuentes</Link></li>
                             <li>{!isMobile ? <button onClick={startRecording}>{'GRABAR'}</button> : <p>{':('}</p>}</li>
                         </ul>
                     </div>
@@ -158,7 +169,6 @@ export default function Landing(props) {
                         </Flex>
                     </Flex>
                 </Flex>
-
                 <Flex h={'100%'} w={'100%'} bg={'#453AFF'} id='about-us'>
                     <Flex h={'100%'} justify={'center'} align={'center'}>
                         <Flex w={'35%'} px={5} display={['none', 'none', 'flex', 'flex']}>
@@ -170,6 +180,7 @@ export default function Landing(props) {
                                 </Box>
                             </Flex>
                         </Flex>
+
                         <Flex flexDir={'column'} w={['100%', '100%', '60%', '60%']} px={['10px', '10px', '100px', '100px']} gap={'50px'} color={'#fff'}>
                             <Heading>Sobre el servicio</Heading>
                             <Flex justify={'space-evenly'} flexWrap={'wrap'} gap={'50px'}>
@@ -201,8 +212,6 @@ export default function Landing(props) {
                         </Flex>
 
                     </Flex>
-
-
                 </Flex>
                 <Flex h={['100%', '100%', '100%', '100%']} w={'100%'} bg={'#19228B'} id='frequent-questions'>
                     <Flex h={'100%'} justify={'center'} align={'center'} flexWrap={'wrap'}>
@@ -290,6 +299,7 @@ export default function Landing(props) {
                 </Flex>
             </div>
         </Flex>
+
     )
 }
 
@@ -299,7 +309,7 @@ function MyDrawer() {
 
     return (
         <>
-            <Button bg={'#4352E3'} onClick={onOpen} position={'absolute'} right={3} top={3} color={'#fff'}>
+            <Button bg={'#4352E3'} onClick={onOpen} position={'absolute'} right={3} top={3} color={'#fff'} display={['flex', 'flex', 'none', 'none']}>
                 <GiHamburgerMenu />
             </Button>
             <Drawer placement={'top'} onClose={onClose} isOpen={isOpen} bg='#4352E3'>
